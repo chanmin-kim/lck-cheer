@@ -1,0 +1,156 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LCK 치어풀 서비스</title>
+  <link rel="stylesheet" href="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+  <link href="/css/form-icon.scss" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="top-bar" id="realEstateMenu">
+    <div class="top-bar-left">
+      <ul class="menu" data-responsive-menu="accordion">
+        <li class="menu-text">
+          <a href='/' method='GET'>
+            LCK 치어풀 서비스
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="top-bar-right">
+      <ul class="menu">
+        <li><a class="button" href="/register" method="GET">회원가입</a></li>
+        <li><a class="button" href="/login" method="GET">로그인</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="row column">
+    <hr>
+  </div>
+
+  <div class="row small-up-1 medium-up-2 large-up-3">
+    <form>
+      <div class="form-icons">
+        <h4>회원가입을 위한 정보를 입력해주세요</h4>
+
+        <div class="input-group">
+          <span class="input-group-label">
+            <i class="fa fa-user"></i>
+          </span>
+          <input class="input-group-field" type="text" id="nickname" placeholder="닉네임">
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-label">
+            <i class="fa fa-key"></i>
+          </span>
+          <input class="input-group-field" type="password" id="password" placeholder="비밀번호">
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-label">
+            <i class="fa fa-key"></i>
+          </span>
+          <input class="input-group-field" type="password" id="confirmPassword" placeholder="비밀번호 확인">
+        </div>
+      </div>
+
+      <button class="button expanded" onclick="submitRegister()">회원가입</button>
+    </form>
+  </div>
+
+  <footer>
+    <div class="row expanded callout secondary">
+    </div>
+    <div class="row">
+      <div class="medium-6 columns">
+        <ul class="menu float-right">
+          <li class="menu-text">Developed by freedman</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
+  <script>
+    $(document).foundation();
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+    integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+    crossorigin="anonymous"></script>
+  
+  <script>
+    function submitRegister() {
+      let nickname = $('#nickname').val();
+      let password = $('#password').val();
+      let confirmPassword = $('#confirmPassword').val();
+
+      if (!nickname || !password || !confirmPassword) {
+        alert("모든 정보를 입력해주세요");
+        return false;
+      }
+
+      if (nickname.length <= 2) {
+        alert("닉네임을 3자 이상으로 만들어주세요");
+        return false;
+      }
+
+      const regExp1 =  /[~!@#$%^&*()_+|<>?:{}]/;
+      if (regExp1.test(nickname) == true) {
+        alert("닉네임에 특수문자가 들어가면 안됩니다")
+        return false;
+      }
+
+      const regExp2 = /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*$/;
+      if (regExp2.test(nickname) == true) {
+        alert("닉네임은 알파벳 대소문자 또는 숫자로만 지어주세요")
+        return false;
+      }
+
+      if (password.length <= 3) {
+        alert("비밀번호는 최소 4자 이상입니다");
+        return false;
+      }
+
+      if (password.includes(nickname)) {
+        alert("비밀번호에는 닉네임이 들어가면 안됩니다");
+        return false;
+      }
+
+      if (password != confirmPassword) {
+        alert("비밀번호 확인란을 제대로 입력해주세요");
+        return false;
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "/api/auth/register",
+        data: {
+          register_nickname: nickname,
+          register_password: password
+        }
+      }).done(function(response){
+          alert(response.responseJSON.message);
+          location.href = '/login';
+      }).fail(function(error){
+          alert(error.responseJSON.message);
+      })
+    }
+  </script>
+</body>
+
+</html>

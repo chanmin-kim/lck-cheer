@@ -18,7 +18,11 @@ app.get('/', (req,res)=>{
 })
 
 app.get('/register', (req,res)=>{
-    res.render('register.ejs');
+    res.render('register');
+})
+
+app.get('/login', (req,res)=>{
+    res.render('login.ejs');
 })
 
 app.use("/api/auth",authRouter);
