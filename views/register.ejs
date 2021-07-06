@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      <button class="button expanded" onclick="submitRegister()">회원가입</button>
+      <button class="button expanded" type="button" onclick="submitRegister()">회원가입</button>
     </form>
   </div>
 
@@ -144,7 +144,7 @@
           register_password: password
         }
       }).done(function(response){
-          alert(response.responseJSON.message);
+          alert(response.message);
           location.href = '/login';
       }).fail(function(error){
           alert(error.responseJSON.message);
