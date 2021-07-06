@@ -2,12 +2,15 @@ var express = require('express');
 var router = express.Router();
 const { Op } = require("sequelize");
 const { User } = require("../models");
+const jwt = require("jsonwebtoken");
 
 router.post('/register', async(req,res)=>{
     const { register_nickname, register_password } = req.body;
 
     const existsUsers = await User.findAll({
-        where: {nickname:register_nickname}
+        where: {
+            nickname:register_nickname
+        }
     });
     
     if (existsUsers.length) {
@@ -23,9 +26,26 @@ router.post('/register', async(req,res)=>{
     }
 })
 
+router.post('/login', async(req,res)=>{
+    const { login_nickname, login_password } = req.body;
 
-// 로그인을 처리하는 부분 - 로그인이 성공적으로 이루어지면 토큰을 발급해준다
+    const user = await User.findOne({
+        where: {
+            nickname: login_nickname,
+        }
+    });
 
+    if (!user || login_password !== user.password) {
+        res.status(400).send({
+          message: "닉네임 또는 패스워드가 틀렸습니다.",
+        });
+        return;
+    }
+
+    res.send({
+        token: jwt.sign({ userNickname: user.nickname }, "customized-secret-key"),
+    });
+})
 
 
 module.exports = router;
